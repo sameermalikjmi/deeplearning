@@ -13,7 +13,7 @@ def problem_1d (x, y):
     return np.dot(x, y)
 
 def problem_1e (A, x):
-    return np.linalg(A, x)
+    return np.linalg.solve(A, x)
 
 def problem_1f (A, x):
 
@@ -22,12 +22,14 @@ def problem_1f (A, x):
 def problem_1g (A, i):
     arrayBool = np.zeros([1, A.shape[1]],dtype=bool)
     arrayBool[:, 0:A.shape[1]:2] = True
-    return np.sum(A[i,:], where=arrayBool, axis=0)
+    return np.sum(np.add.reduce(A[i,:], where=arrayBool, axis=0))
 
 def problem_1h (A, c, d):
-    mask = ((A>=c) and (A<=d))
-    newA = mask*A
-    nonzeroElements = np.nonzero(A)
+    
+    mask1 = ((A>=c))
+    mask2 = ((A<=d))
+    mask = mask1 * mask2
+    nonzeroElements = np.nonzero(mask)
     meanNonZero = np.mean(nonzeroElements)
     return meanNonZero
 
@@ -45,11 +47,11 @@ def problem_1j (x, k, m, s):
     finalDistribution = distribution.T
     return finalDistribution
 
+###CHANGE THIS this doesnt return anything:
 def problem_1k (A):
-    return np.random.shuffle(A) 
+    np.random.shuffle(A)
+    return A
 
-
-#write direct / instead of /. for element wise division
 def problem_1l (x):
     return ((x - np.mean(x))/(np.std(x)))
 
@@ -58,7 +60,9 @@ def problem_1m (x, k):
     return np.repeat(x,k, axis=1)
 
 def problem_1n (X):
-    B = X.reshape(X.shape[0], X.shape[1], 1)
+    
+    B = X.reshape((X.shape[0], X.shape[1], -1))
+    print(B.shape)
     C = np.repeat(B, X.shape[1], 2)
     D = np.transpose(C, [0, 2, 1])
     L2 = np.linalg.norm(C - D, axis = 0)
@@ -68,8 +72,9 @@ def linear_regression (X_tr, y_tr):
     X_tr = X_tr.T
     y_tr = np.reshape(y_tr, (y_tr.shape[0], 1))
     w = np.linalg.solve(np.dot(X_tr, X_tr.T), np.dot(X_tr, y_tr))
+    return w
 
-    ...
+    # ...
 
 def train_age_regressor ():
     # Load data
@@ -82,8 +87,8 @@ def train_age_regressor ():
 
     # Report fMSE cost on the training and testing data (separately)
     # ...
-# a= np.array([1,2,3])    
-# std =(np.std(np.array(a)))   
-# print(std) 
-# print((np.array([1,2,3])- np.mean(a))/std)
-# print(problem_1l(np.array([1,2,3])));
+    fMSE_Train = (np.mean( np.square( (np.dot( w.T, X_tr.T)) - ytr), axis = 1))/2
+    fMSE_Test = (np.mean( np.square( (np.dot( w.T, X_te.T)) - yte), axis = 1))/2
+
+train_age_regressor()
+
